@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>麦门轻食策 · 一周食谱</title>
+<style>
+  :root {
+    --gold: #FFC72C;
+    --gold-dark: #e8ac00;
+    --red: #DA291C;
+    --ink: #2D2A26;
+    --muted: #8A8577;
+    --line: #EEE9E0;
+    --bg: #FAF7F2;
+    --card: #FFFFFF;
+    --teal: #0F6E56;
+    --teal-bg: #E1F5EE;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 90px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+
+  header {
+    border-bottom: 1px solid var(--line);
+    background: #fff;
+    position: sticky; top: 0; z-index: 20;
+  }
+  .nav { display: flex; align-items: center; gap: 10px; height: 60px; }
+  .logo { width: 30px; height: 30px; border-radius: 8px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; }
+  .brand { font-weight: 700; font-size: 16px; }
+  .brand small { font-weight: 400; color: var(--muted); margin-left: 6px; }
+
+  .hero { padding: 34px 0 20px; }
+  .hero h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+  .hero p { color: var(--muted); margin-top: 8px; font-size: 15px; max-width: 640px; }
+  .badge { display: inline-block; background: #fff5d6; color: #a17000; border: 1px solid #ffe6a0; border-radius: 999px; padding: 3px 12px; font-size: 12px; margin-bottom: 12px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; margin-bottom: 18px; }
+  .card h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .card .sub { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (min-width: 640px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+    font-size: 15px; background: #fff; color: var(--ink); outline: none; transition: border .15s;
+  }
+  .field input:focus, .field select:focus { border-color: var(--gold-dark); }
+  .field .unit { font-size: 12px; color: var(--muted); margin-left: 4px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    background: var(--gold); color: #3a2e00; font-weight: 600; font-size: 15px;
+    border: none; border-radius: 12px; padding: 12px 26px; cursor: pointer; transition: transform .1s, background .15s;
+    width: 100%; margin-top: 6px;
+  }
+  .btn:hover { background: var(--gold-dark); }
+  .btn:active { transform: scale(0.99); }
+  .btn.sm { width: auto; padding: 8px 16px; font-size: 13px; margin-top: 0; }
+  .btn.red { background: var(--red); color: #fff; }
+  .btn.red:hover { background: #b82016; }
+  .btn.ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .btn.ghost:hover { background: #f7f4ee; }
+  .btn.gold { background: var(--gold); color: #3a2e00; }
+  .btn.gold:hover { background: var(--gold-dark); }
+
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  @media (min-width: 640px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .stat { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #fff; }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  .stat .v { font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .stat .v small { font-size: 12px; font-weight: 400; color: var(--muted); }
+
+  .macros { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+  .macro { background: var(--blue-bg); color: var(--blue); border-radius: 999px; padding: 5px 14px; font-size: 13px; }
+  .warn { background: #FCEBEB; color: #A32D2D; border: 1px solid #F7C1C1; border-radius: 10px; padding: 10px 14px; font-size: 13px; margin-top: 12px; }
+
+  .seg { display: flex; background: #F1EEE7; border-radius: 12px; padding: 4px; margin-bottom: 16px; }
+  .seg button { flex: 1; border: none; background: transparent; padding: 9px 12px; border-radius: 9px; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s; }
+  .seg button.active { background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; }
+  .tag.mcd { background: #fff5d6; color: #a17000; }
+  .tag.home { background: var(--teal-bg); color: var(--teal); }
+
+  .week-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+  .week-head h2 { margin-bottom: 0; }
+  .week-summary { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+  /* ---- 日卡片（手风琴） ---- */
+  .day-card { border: 1px solid var(--line); border-radius: 14px; background: #fff; margin-bottom: 12px; overflow: hidden; }
+  .day-head { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; user-select: none; }
+  .day-head:hover { background: #FCFAF6; }
+  .day-badge { flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px; background: #fff5d6; color: #a17000; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+  .day-badge .cn { font-weight: 700; font-size: 15px; }
+  .day-badge .en { font-size: 10px; color: #c79a2e; }
+  .day-info { flex: 1; min-width: 0; }
+  .day-title { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .day-theme { font-size: 12px; font-weight: 600; color: var(--teal); background: var(--teal-bg); border-radius: 6px; padding: 1px 8px; }
+  .day-line { font-size: 12.5px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .day-total { flex-shrink: 0; text-align: right; font-size: 13px; color: var(--muted); }
+  .day-total b { display: block; font-size: 16px; color: var(--ink); }
+  .chev { flex-shrink: 0; color: var(--muted); font-size: 14px; transition: transform .2s; }
+  .day-card.open .chev { transform: rotate(180deg); }
+
+  .day-body { display: none; border-top: 1px dashed var(--line); padding: 16px 18px; background: #FCFAF6; }
+  .day-card.open .day-body { display: block; }
+
+  .meal-block { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .meal-block:last-child { margin-bottom: 0; }
+  .meal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .meal-name { font-weight: 700; font-size: 14px; }
+  .meal-meta { margin-left: auto; font-size: 12.5px; color: var(--muted); display: flex; gap: 12px; flex-wrap: wrap; }
+  .meal-meta b { color: var(--ink); }
+
+  .item-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
+  .item { display: flex; align-items: center; gap: 10px; font-size: 13.5px; }
+  .item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-dark); flex-shrink: 0; }
+  .item .n { flex: 1; }
+  .item .v { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+
+  .note { background: #F6F3EC; border: 1px dashed #ddd6c8; border-radius: 10px; padding: 9px 13px; font-size: 12.5px; color: #6b6557; margin-top: 10px; line-height: 1.7; }
+  .note b { color: var(--teal); }
+
+  .meal-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .meal-sub { font-size: 12.5px; color: var(--muted); }
+  .meal-sub b { color: var(--ink); }
+
+  .hidden { display: none !important; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 30px 0 20px; border-top: 1px solid var(--line); margin-top: 30px; }
+  footer a { color: var(--blue); text-decoration: none; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%);
+    background: var(--ink); color: #fff; padding: 11px 20px; border-radius: 10px; font-size: 14px;
+    opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 100; max-width: 90vw; text-align: center;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ---- 购物车 ---- */
+  .cart-fab {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 20px; z-index: 60;
+    display: flex; align-items: center; gap: 12px;
+    background: var(--ink); color: #fff; border: none; border-radius: 999px;
+    padding: 12px 22px; font-size: 14px; font-weight: 600; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(0,0,0,.18); max-width: 92vw;
+  }
+  .cart-fab .cnt { background: var(--gold); color: #3a2e00; border-radius: 999px; padding: 0 9px; font-size: 12px; font-weight: 700; }
+  .cart-fab .total { color: var(--gold); }
+
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .cart-overlay.show { opacity: 1; pointer-events: auto; }
+  .cart-panel {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 80; background: #fff;
+    border-radius: 20px 20px 0 0; padding: 20px 20px 28px; max-height: 72vh; overflow-y: auto;
+    transform: translateY(100%); transition: transform .25s ease; box-shadow: 0 -8px 30px rgba(0,0,0,.12);
+  }
+  .cart-panel.show { transform: translateY(0); }
+  .cart-panel h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .cart-panel .sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+  .cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+  .cart-item .n { flex: 1; }
+  .cart-item .v { color: var(--muted); font-size: 12.5px; white-space: nowrap; }
+  .cart-item .rm { border: none; background: #fdecec; color: #b82016; border-radius: 8px; width: 26px; height: 26px; cursor: pointer; font-size: 14px; line-height: 1; }
+  .cart-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 24px 0; }
+  .cart-foot { display: flex; gap: 10px; margin-top: 16px; }
+  .cart-foot .btn { margin-top: 0; }
+
+  /* ---- 优惠券 ---- */
+  .coupon-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 600px) { .coupon-grid { grid-template-columns: 1fr; } }
+  .coupon { display: flex; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; position: relative; }
+  .coupon.soldout { opacity: .55; }
+  .coupon-left { flex-shrink: 0; width: 92px; background: #fff5d6; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px 8px; border-right: 1px dashed #f0dfae; color: #a17000; }
+  .coupon-left .v { font-size: 24px; font-weight: 800; color: var(--red); line-height: 1; }
+  .coupon-left .v small { font-size: 13px; }
+  .coupon-left .t { font-size: 11px; margin-top: 4px; color: #a17000; }
+  .coupon-right { flex: 1; padding: 12px 14px; display: flex; flex-direction: column; }
+  .coupon-name { font-weight: 700; font-size: 14px; }
+  .coupon-desc { font-size: 12px; color: var(--muted); margin-top: 2px; flex: 1; }
+  .coupon-right .btn { margin-top: 8px; width: 100%; }
+  .coupon-right .btn.sm { padding: 7px 12px; font-size: 13px; }
+  .coupon-right .btn.done { background: #ece9e2; color: #a29b8c; cursor: not-allowed; }
+  .coupon-right .btn.sold { background: #ece9e2; color: #a29b8c; cursor: not-allowed; }
+
+  .wallet { border-top: 1px dashed var(--line); padding-top: 14px; }
+  .wallet h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .wallet-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #F6F3EC; border-radius: 10px; margin-bottom: 8px; font-size: 13px; }
+  .wallet-item .nm { flex: 1; }
+  .wallet-item .tm { color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+  .wallet-item .val { color: var(--red); font-weight: 700; }
+  .wallet-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <div class="logo">M</div>
+    <div class="brand">麦门轻食策<small>mcd-light-diet</small></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="badge">麦当劳程序员创意开发大赛 · 参赛作品</span>
+    <h1>科学减重，一周食谱直接开吃</h1>
+    <p>输入你的身体数据和减重目标，自动算好每天该吃多少，并生成七天的一日三餐方案——既能在麦当劳点单（支持领券、加购、下单），也能切换成家常减肥食谱。</p>
+  </section>
+
+  <section class="card">
+    <h2>填写个人数据</h2>
+    <div class="sub">基础代谢可留空，系统会用身高体重自动估算</div>
+    <div class="grid">
+      <div class="field">
+        <label>性别</label>
+        <select id="sex"><option>女</option><option>男</option></select>
+      </div>
+      <div class="field">
+        <label>年龄</label>
+        <input id="age" type="number" value="28" min="10" max="90">
+      </div>
+      <div class="field">
+        <label>身高<span class="unit">cm</span></label>
+        <input id="height" type="number" value="165" min="100" max="220">
+      </div>
+      <div class="field">
+        <label>体重<span class="unit">kg</span></label>
+        <input id="weight" type="number" value="65" min="30" max="200" step="0.5">
+      </div>
+      <div class="field">
+        <label>基础代谢<span class="unit">千卡（可空）</span></label>
+        <input id="bmr" type="number" placeholder="留空自动估算" min="800" max="4000">
+      </div>
+      <div class="field">
+        <label>活动水平</label>
+        <select id="activity">
+          <option>久坐</option>
+          <option selected>轻度活动</option>
+          <option>中度活动</option>
+          <option>高强度活动</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>减重目标<span class="unit">斤</span></label>
+        <input id="targetJin" type="number" value="5" min="0.5" max="50" step="0.5">
+      </div>
+      <div class="field">
+        <label>目标天数</label>
+        <input id="targetDays" type="number" value="30" min="3" max="365">
+      </div>
+    </div>
+    <button class="btn" id="generate">生成我的一周减重方案</button>
+  </section>
+
+  <section id="result" class="hidden">
+    <div class="card">
+      <h2>每日热量目标</h2>
+      <div class="sub">依据 Mifflin-St Jeor 公式与热量缺口原理计算，一周七天均按此标准搭配</div>
+      <div class="stats" id="stats"></div>
+      <div class="macros" id="macros"></div>
+      <div class="warn hidden" id="warnings"></div>
+    </div>
+
+    <div class="card" id="couponCard">
+      <div class="week-head">
+        <h2>🎟 优惠券 · 麦麦省</h2>
+        <span class="sub" style="margin-bottom:0;">领券下单更划算（演示版，真实领券由 WorkBuddy 调用 auto-bind-coupons 完成）</span>
+      </div>
+      <div class="coupon-grid" id="couponGrid"></div>
+      <div class="wallet">
+        <h3>🧾 我的券包</h3>
+        <div id="couponWallet"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="week-head">
+        <h2>一周食谱总览</h2>
+        <div class="seg" id="seg" style="margin-bottom:0; width:auto;">
+          <button data-plan="mcd" class="active">麦当劳套餐</button>
+          <button data-plan="home">普通减肥食谱</button>
+        </div>
+      </div>
+      <div class="week-summary" id="weekSummary"></div>
+      <div id="weekList"></div>
+      <button class="btn gold" id="addAll" style="margin-top:16px;">全部加入购物车</button>
+    </div>
+  </section>
+
+  <footer>
+    <p>本项目为麦当劳程序员创意开发大赛参赛作品，基于麦当劳 MCP 能力开发，非麦当劳官方产品。</p>
+    <p>输出仅供参考，不构成医疗、营养或其他专业建议；餐品信息以麦当劳官方渠道实时结果为准。</p>
+    <p><a href="https://github.com/M-China/mcd-developer-innovation-challenge" target="_blank">比赛仓库</a> · <a href="https://github.com/M-China/mcd-mcp-server" target="_blank">麦当劳 MCP</a></p>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<button class="cart-fab hidden" id="cartFab">
+  🛒 <span class="cnt" id="cartCnt">0</span> 件 · 合计 <span class="total" id="cartTotal">¥0</span>
+</button>
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-panel" id="cartPanel">
+  <h3>🛒 我的购物车</h3>
+  <div class="sub">演示版购物车；真实下单由 WorkBuddy 调用麦当劳 MCP 完成</div>
+  <div id="cartList"></div>
+  <div class="cart-foot">
+    <button class="btn ghost" id="cartClear">清空</button>
+    <button class="btn red" id="cartCheckout">去下单（演示）</button>
+  </div>
+</div>
+
+<script>
+// ====================================================================
+// 数据层（示例数据，生产环境由麦当劳 MCP 实时提供）
+// ====================================================================
+
+// 麦当劳菜单：cat 用于区分餐次（breakfast/main/side/drink）
+const MCD_MENU = [
+  // 早餐类
+  { name: "猪柳蛋麦满分",        cat: "breakfast", price: 16.0, calories: 387, protein: 23 },
+  { name: "原味板烧鸡腿麦满分",  cat: "breakfast", price: 14.5, calories: 246, protein: 15 },
+  { name: "吉士蛋麦满分",        cat: "breakfast", price: 14.0, calories: 282, protein: 16 },
+  { name: "火腿扒麦满分",        cat: "breakfast", price: 15.0, calories: 306, protein: 18 },
+  { name: "皮蛋鸡肉粥",          cat: "breakfast", price: 9.5,  calories: 133, protein: 6  },
+  { name: "脆薯饼",              cat: "breakfast", price: 6.0,  calories: 146, protein: 1  },
+  // 主食类
+  { name: "板烧鸡腿堡",          cat: "main", price: 14.0, calories: 391, protein: 23 },
+  { name: "双层吉士汉堡",        cat: "main", price: 16.5, calories: 429, protein: 27 },
+  { name: "麦香鸡",              cat: "main", price: 11.0, calories: 369, protein: 15 },
+  { name: "麦香鱼",              cat: "main", price: 13.0, calories: 325, protein: 16 },
+  { name: "汉堡包",              cat: "main", price: 9.0,  calories: 248, protein: 13 },
+  { name: "麦辣鸡腿堡",          cat: "main", price: 15.0, calories: 485, protein: 24 },
+  // 小食类
+  { name: "中薯条",              cat: "side", price: 11.5, calories: 289, protein: 4  },
+  { name: "小杯玉米杯",          cat: "side", price: 6.0,  calories: 53,  protein: 2  },
+  { name: "麦乐鸡5块",           cat: "side", price: 12.0, calories: 213, protein: 12 },
+  { name: "鲜蔬杯",              cat: "side", price: 9.0,  calories: 70,  protein: 2  },
+  // 饮品类
+  { name: "无糖可口可乐中杯",    cat: "drink", price: 7.5, calories: 0,   protein: 0  },
+  { name: "零度雪碧中杯",        cat: "drink", price: 7.5, calories: 0,   protein: 0  },
+  { name: "纯牛奶(盒装)",        cat: "drink", price: 8.0, calories: 129, protein: 7  },
+  { name: "冰美式中杯",          cat: "drink", price: 9.0, calories: 13,  protein: 1  },
+];
+
+// 家常减肥食谱库（含估算成本 cost）
+const RECIPE_DB = [
+  { name: "水煮蛋 x2 + 全麦面包 + 无糖豆浆", meal: "breakfast", kcal: 320, protein: 22, cost: 9,  ingredients: "鸡蛋2个、全麦面包1片、无糖豆浆250ml", method: "鸡蛋水煮8分钟，面包烤1分钟，豆浆加热" },
+  { name: "燕麦牛奶 + 香蕉半根", meal: "breakfast", kcal: 300, protein: 12, cost: 8,  ingredients: "即食燕麦40g、脱脂牛奶250ml、香蕉半根", method: "燕麦加牛奶小火煮3分钟，香蕉切片加入" },
+  { name: "鸡胸肉蔬菜卷 + 黑咖啡", meal: "breakfast", kcal: 280, protein: 28, cost: 15, ingredients: "鸡胸肉80g、生菜、全麦卷饼1张、黑咖啡", method: "鸡胸肉煎熟切条，卷入生菜与饼中" },
+  { name: "香煎鸡胸 + 糙米饭 + 西兰花", meal: "lunch", kcal: 520, protein: 42, cost: 18, ingredients: "鸡胸肉150g、糙米60g、西兰花200g", method: "鸡胸煎熟，糙米蒸熟，西兰花焯水" },
+  { name: "清蒸鲈鱼 + 杂粮饭 + 时蔬", meal: "lunch", kcal: 480, protein: 38, cost: 22, ingredients: "鲈鱼150g、杂粮米60g、青菜200g", method: "鲈鱼清蒸8分钟，杂粮饭蒸熟，青菜快炒" },
+  { name: "牛肉炒时蔬 + 玉米一根", meal: "lunch", kcal: 500, protein: 36, cost: 20, ingredients: "瘦牛肉120g、青椒洋葱、玉米1根", method: "牛肉快炒，玉米蒸熟" },
+  { name: "豆腐菌菇汤 + 全麦面包 x1", meal: "lunch", kcal: 380, protein: 26, cost: 12, ingredients: "嫩豆腐200g、菌菇150g、全麦面包1片", method: "豆腐菌菇煮汤，面包烤热" },
+  { name: "番茄鸡胸意面（全麦）", meal: "dinner", kcal: 450, protein: 34, cost: 16, ingredients: "鸡胸肉120g、全麦意面60g、番茄2个", method: "意面煮熟，鸡胸与番茄酱同炒" },
+  { name: "虾仁蔬菜沙拉 + 溏心蛋", meal: "dinner", kcal: 320, protein: 28, cost: 18, ingredients: "虾仁120g、混合生菜、鸡蛋1个、油醋汁", method: "虾仁焯熟，蔬菜拌匀，蛋煮6分钟" },
+  { name: "冬瓜虾皮汤 + 鸡胸肉 + 蔬菜", meal: "dinner", kcal: 300, protein: 30, cost: 10, ingredients: "冬瓜250g、虾皮、鸡胸肉100g、蔬菜150g", method: "冬瓜虾皮煮汤，鸡胸煎熟" },
+  { name: "清炒时蔬 + 水煮蛋 x2 + 小米粥", meal: "dinner", kcal: 280, protein: 18, cost: 10, ingredients: "时蔬300g、鸡蛋2个、小米40g", method: "小米煮粥，蛋水煮，时蔬快炒" },
+];
+
+// 七天「麦当劳」套餐模板（人工策划，保证每天不同、均衡合理）
+const WEEKLY_MCD_TEMPLATES = [
+  { theme: "轻盈启动", note: "周一以高蛋白、低负担组合开启新一周",
+    breakfast: ["猪柳蛋麦满分", "冰美式中杯"],
+    lunch:     ["板烧鸡腿堡", "小杯玉米杯", "无糖可口可乐中杯"],
+    dinner:    ["麦香鱼", "鲜蔬杯"] },
+  { theme: "均衡营养", note: "周二主餐补足蛋白，搭配膳食纤维与牛奶",
+    breakfast: ["原味板烧鸡腿麦满分", "纯牛奶(盒装)"],
+    lunch:     ["双层吉士汉堡", "小杯玉米杯", "零度雪碧中杯"],
+    dinner:    ["麦乐鸡5块", "鲜蔬杯", "纯牛奶(盒装)"] },
+  { theme: "高纤控卡", note: "周三用膳食纤维增强饱腹、稳定血糖",
+    breakfast: ["吉士蛋麦满分", "冰美式中杯"],
+    lunch:     ["麦香鸡", "小杯玉米杯", "无糖可口可乐中杯"],
+    dinner:    ["板烧鸡腿堡", "鲜蔬杯"] },
+  { theme: "低碳清爽", note: "周四减少油炸，主打清爽低碳组合",
+    breakfast: ["火腿扒麦满分", "纯牛奶(盒装)"],
+    lunch:     ["麦香鱼", "小杯玉米杯", "零度雪碧中杯"],
+    dinner:    ["汉堡包", "麦乐鸡5块"] },
+  { theme: "能量储备", note: "周五为周末蓄能，蛋白与碳水均衡",
+    breakfast: ["猪柳蛋麦满分", "冰美式中杯"],
+    lunch:     ["双层吉士汉堡", "鲜蔬杯"],
+    dinner:    ["板烧鸡腿堡", "无糖可口可乐中杯"] },
+  { theme: "周末小放纵", note: "周六适度放宽一点，但仍控制在预算内",
+    breakfast: ["吉士蛋麦满分", "纯牛奶(盒装)"],
+    lunch:     ["麦辣鸡腿堡", "鲜蔬杯"],
+    dinner:    ["麦香鱼", "小杯玉米杯", "零度雪碧中杯"] },
+  { theme: "轻食收尾", note: "周日清淡收尾，帮助身体恢复、迎接新一周",
+    breakfast: ["皮蛋鸡肉粥", "脆薯饼", "纯牛奶(盒装)"],
+    lunch:     ["板烧鸡腿堡", "小杯玉米杯", "无糖可口可乐中杯"],
+    dinner:    ["汉堡包", "鲜蔬杯", "纯牛奶(盒装)"] },
+];
+
+const WEEKDAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+const MEAL_LABEL = { breakfast: "早餐", lunch: "午餐", dinner: "晚餐" };
+
+// 优惠券（示例数据，生产环境由麦当劳 MCP available-coupons / auto-bind-coupons 提供）
+// stock: 剩余库存；stock === 0 表示已抢光
+const COUPONS = [
+  { id: "c5", name: "麦麦省 5 元无门槛券", desc: "全场通用 · 满 0 元可用", value: "¥5", stock: 999, expire: "有效期 7 天" },
+  { id: "c8", name: "满 30 减 8 元券", desc: "订单满 30 元可用", value: "¥8", stock: 500, expire: "有效期 7 天" },
+  { id: "c3", name: "板烧鸡腿堡 3 元券", desc: "限板烧鸡腿堡单品", value: "¥3", stock: 200, expire: "有效期 3 天" },
+  { id: "c1", name: "中薯条 1 元尝鲜券", desc: "限中薯条单品", value: "¥1", stock: 0, expire: "有效期 3 天" },
+  { id: "cf", name: "无糖可乐免费券", desc: "中杯无糖可口可乐", value: "免费", stock: 0, expire: "有效期 1 天" },
+];
+
+// ====================================================================
+// 营养计算
+// ====================================================================
+const ACTIVITY_FACTORS = { "久坐": 1.2, "轻度活动": 1.375, "中度活动": 1.55, "高强度活动": 1.725 };
+const CALORIES_PER_KG_FAT = 7700;
+
+function calcBMR(sex, age, height, weight) {
+  return sex === "男" ? 10 * weight + 6.25 * height - 5 * age + 5
+                      : 10 * weight + 6.25 * height - 5 * age - 161;
+}
+function calcDailyTarget(bmr, targetJin, days, activity, sex) {
+  const tdee = bmr * (ACTIVITY_FACTORS[activity] || 1.2);
+  const dailyDeficit = (targetJin / 2) * CALORIES_PER_KG_FAT / days;
+  const dailyTarget = tdee - dailyDeficit;
+  const floor = sex === "女" ? 1200 : 1500;
+  const warnings = [];
+  if (dailyTarget < floor) warnings.push("目标每日摄入低于安全下限 " + floor + " 千卡，建议延长减重周期或减小目标斤数");
+  if (dailyDeficit > 1000) warnings.push("每日热量缺口偏大，减重过快易反弹，建议放慢节奏");
+  return { tdee, dailyDeficit, dailyTarget, warnings };
+}
+function calcMacros(weight, dailyTarget) {
+  const protein = weight * 1.6;
+  const fat = dailyTarget * 0.25 / 9;
+  const carb = Math.max(dailyTarget - protein * 4 - dailyTarget * 0.25, 0) / 4;
+  return { protein: Math.round(protein), fat: Math.round(fat), carb: Math.round(carb) };
+}
+function splitMeals(dailyTarget, protein) {
+  const ratio = { breakfast: 0.30, lunch: 0.40, dinner: 0.30 };
+  const out = {};
+  for (const k in ratio) out[k] = { kcal: Math.round(dailyTarget * ratio[k]), protein: Math.round(protein * ratio[k]) };
+  return out;
+}
+
+// ====================================================================
+// 一周方案生成
+// ====================================================================
+function menuByName(name) { return MCD_MENU.find(m => m.name === name); }
+
+function generateWeeklyMcd() {
+  return WEEKLY_MCD_TEMPLATES.map(t => {
+    const meals = {};
+    for (const meal of ["breakfast", "lunch", "dinner"]) {
+      const items = t[meal].map(menuByName).filter(Boolean);
+      meals[meal] = {
+        items,
+        kcal: items.reduce((s, m) => s + m.calories, 0),
+        protein: items.reduce((s, m) => s + m.protein, 0),
+        price: items.reduce((s, m) => s + m.price, 0),
+      };
+    }
+    return { theme: t.theme, note: t.note, meals };
+  });
+}
+
+function generateWeeklyHome() {
+  return WEEKDAYS.map((_, d) => {
+    const meals = {};
+    for (const meal of ["breakfast", "lunch", "dinner"]) {
+      const pool = RECIPE_DB.filter(r => r.meal === meal);
+      const r = pool[d % pool.length];
+      meals[meal] = { recipe: r, kcal: r.kcal, protein: r.protein, price: r.cost };
+    }
+    return { meals };
+  });
+}
+
+// 套餐「搭配理由」备注生成
+function mcdNote(meal, m, budgetKcal) {
+  const parts = [];
+  const mains = m.items.filter(i => i.cat === "main" || i.cat === "breakfast");
+  const drinks = m.items.filter(i => i.cat === "drink");
+  const sides = m.items.filter(i => i.cat === "side");
+  if (mains.length) parts.push(`主餐「${mains[0].name}」提供约 ${mains[0].protein}g 优质蛋白`);
+  if (sides.some(s => /鲜蔬|玉米/.test(s.name))) parts.push("搭配膳食纤维增强饱腹感、稳定血糖");
+  if (drinks.some(d => /无糖|零度/.test(d.name))) parts.push("无糖饮品 0 卡 0 糖不增负担");
+  else if (drinks.some(d => /牛奶/.test(d.name))) parts.push("牛奶补钙又补蛋白");
+  parts.push(`整餐热量 ${Math.round(m.kcal)} 千卡（预算约 ${Math.round(budgetKcal)} 千卡）`);
+  return parts.join("；") + "。";
+}
+const HOME_NOTE = {
+  breakfast: "早餐高蛋白开启代谢，搭配全麦/燕麦等慢碳，饱腹到中午",
+  lunch:     "午餐用粗粮 + 优质蛋白 + 足量蔬菜，扛饿且控卡",
+  dinner:    "晚餐低油低糖、适量蛋白，睡前易消化",
+};
+function homeNote(meal, r) {
+  return `${HOME_NOTE[meal]}；食材常见易得，做法：${r.method}。`;
+}
+
+// ====================================================================
+// 状态与渲染
+// ====================================================================
+let currentPlan = "mcd";
+let weeklyMcd = null, weeklyHome = null;
+let mealSplit = null;
+let cart = [];
+const openDays = new Set([0]);
+
+// 优惠券状态：claimed[id] = 领取时间戳（本地记录，模拟「已领取」持久化）
+const COUPON_STORAGE_KEY = "mcd_claimed_coupons_v1";
+let claimedCoupons = loadClaimedCoupons();
+
+function loadClaimedCoupons() {
+  try {
+    const raw = localStorage.getItem(COUPON_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) { return {}; }
+}
+function saveClaimedCoupons() {
+  try { localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(claimedCoupons)); } catch (e) {}
+}
+
+function couponStatus(c) {
+  if (c.stock <= 0) return "soldout";      // 已抢光
+  if (claimedCoupons[c.id]) return "claimed"; // 已领取
+  return "available";                       // 可领取
+}
+
+function fmt(n) { return Math.round(n); }
+function money(n) { return "¥" + n.toFixed(1); }
+
+function render() {
+  const sex = document.getElementById("sex").value;
+  const age = +document.getElementById("age").value;
+  const height = +document.getElementById("height").value;
+  const weight = +document.getElementById("weight").value;
+  const bmrInput = document.getElementById("bmr").value;
+  const targetJin = +document.getElementById("targetJin").value;
+  const targetDays = +document.getElementById("targetDays").value;
+  const activity = document.getElementById("activity").value;
+
+  const bmr = bmrInput ? +bmrInput : calcBMR(sex, age, height, weight);
+  const target = calcDailyTarget(bmr, targetJin, targetDays, activity, sex);
+  const macros = calcMacros(weight, target.dailyTarget);
+  mealSplit = splitMeals(target.dailyTarget, macros.protein);
+
+  weeklyMcd = generateWeeklyMcd();
+  weeklyHome = generateWeeklyHome();
+  cart = [];
+
+  document.getElementById("stats").innerHTML =
+    `<div class="stat"><div class="k">基础代谢 BMR</div><div class="v">${fmt(bmr)}<small> 千卡</small></div></div>` +
+    `<div class="stat"><div class="k">每日消耗 TDEE</div><div class="v">${fmt(target.tdee)}<small> 千卡</small></div></div>` +
+    `<div class="stat"><div class="k">每日目标摄入</div><div class="v">${fmt(target.dailyTarget)}<small> 千卡</small></div></div>` +
+    `<div class="stat"><div class="k">每日热量缺口</div><div class="v">${fmt(target.dailyDeficit)}<small> 千卡</small></div></div>`;
+
+  document.getElementById("macros").innerHTML =
+    `<span class="macro">蛋白质 ${macros.protein}g</span>` +
+    `<span class="macro">脂肪 ${macros.fat}g</span>` +
+    `<span class="macro">碳水 ${macros.carb}g</span>` +
+    `<span class="macro">三餐 30% / 40% / 30%</span>`;
+
+  const warnBox = document.getElementById("warnings");
+  if (target.warnings.length) { warnBox.classList.remove("hidden"); warnBox.innerHTML = "⚠ " + target.warnings.join("；"); }
+  else warnBox.classList.add("hidden");
+
+  renderWeek();
+  renderCoupons();
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+}
+
+function dayTotals(day) {
+  let kcal = 0, protein = 0, price = 0;
+  for (const meal of ["breakfast", "lunch", "dinner"]) {
+    const m = day.meals[meal];
+    kcal += m.kcal; protein += m.protein; price += m.price;
+  }
+  return { kcal, protein, price };
+}
+
+function renderWeek() {
+  const plan = currentPlan === "mcd" ? weeklyMcd : weeklyHome;
+
+  // 汇总条
+  const totals = plan.map(dayTotals);
+  const avgKcal = fmt(totals.reduce((s, t) => s + t.kcal, 0) / 7);
+  const avgPrice = totals.reduce((s, t) => s + t.price, 0) / 7;
+  document.getElementById("weekSummary").innerHTML =
+    currentPlan === "mcd"
+      ? `共 7 天 · 日均约 ${avgKcal} 千卡 · 日均花费约 ${money(avgPrice)} · 点击任意一天展开查看详情`
+      : `共 7 天 · 日均约 ${avgKcal} 千卡 · 日均食材成本约 ${money(avgPrice)} · 点击任意一天展开查看做法与食材`;
+
+  document.getElementById("weekList").innerHTML = plan.map((day, idx) => dayCardHtml(day, idx)).join("");
+
+  // 普通减肥食谱不提供在线下单，隐藏「全部加入购物车」与「优惠券」
+  document.getElementById("addAll").classList.toggle("hidden", currentPlan !== "mcd");
+  document.getElementById("couponCard").classList.toggle("hidden", currentPlan !== "mcd");
+}
+
+// ====================================================================
+// 优惠券：领取与渲染
+// ====================================================================
+function claimCoupon(id) {
+  const c = COUPONS.find(x => x.id === id);
+  if (!c) return;
+
+  // 边界 1：已抢光
+  if (c.stock <= 0) {
+    toast(`「${c.name}」已抢光，下次早点来～`);
+    return;
+  }
+  // 边界 2：重复领取
+  if (claimedCoupons[id]) {
+    toast(`你已领取过「${c.name}」，请勿重复领取`);
+    return;
+  }
+
+  // 正常领取：记录时间戳并持久化
+  claimedCoupons[id] = Date.now();
+  saveClaimedCoupons();
+  renderCoupons();
+  toast(`🎉 领取成功！「${c.name}」已放入我的券包`);
+}
+
+function renderCoupons() {
+  // 优惠券列表
+  document.getElementById("couponGrid").innerHTML = COUPONS.map(c => {
+    const st = couponStatus(c);
+    let btn;
+    if (st === "soldout") {
+      btn = `<button class="btn sm sold" disabled>已抢光</button>`;
+    } else if (st === "claimed") {
+      btn = `<button class="btn sm done" disabled>已领取 ✓</button>`;
+    } else {
+      btn = `<button class="btn sm gold" onclick="claimCoupon('${c.id}')">立即领取</button>`;
+    }
+    return `
+    <div class="coupon ${st === "soldout" ? "soldout" : ""}">
+      <div class="coupon-left"><div class="v">${c.value}</div><div class="t">麦麦省券</div></div>
+      <div class="coupon-right">
+        <div class="coupon-name">${c.name}</div>
+        <div class="coupon-desc">${c.desc} · ${c.expire}</div>
+        ${btn}
+      </div>
+    </div>`;
+  }).join("");
+
+  // 我的券包
+  renderWallet();
+}
+
+function renderWallet() {
+  const claimed = COUPONS.filter(c => claimedCoupons[c.id] && c.stock > 0);
+  const el = document.getElementById("couponWallet");
+  if (claimed.length === 0) {
+    el.innerHTML = `<div class="wallet-empty">还没有领取优惠券，快去上方领一张吧～</div>`;
+    return;
+  }
+  el.innerHTML = claimed.map(c => {
+    const t = new Date(claimedCoupons[c.id]);
+    const timeStr = `${t.getMonth() + 1}/${t.getDate()} ${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}`;
+    return `
+    <div class="wallet-item">
+      <span class="val">${c.value}</span>
+      <span class="nm">${c.name}</span>
+      <span class="tm">领取于 ${timeStr}</span>
+    </div>`;
+  }).join("");
+}
+
+function dayCardHtml(day, idx) {
+  const t = dayTotals(day);
+  const open = openDays.has(idx);
+  const summaryLine = ["breakfast", "lunch", "dinner"]
+    .map(k => `${MEAL_LABEL[k]}: ${mealBrief(day.meals[k])}`).join(" · ");
+
+  const themeTag = currentPlan === "mcd" ? `<span class="day-theme">${day.theme}</span>` : "";
+
+  return `
+  <div class="day-card ${open ? "open" : ""}">
+    <div class="day-head" onclick="toggleDay(${idx})">
+      <div class="day-badge"><span class="cn">${WEEKDAYS[idx].slice(1)}</span><span class="en">DAY${idx + 1}</span></div>
+      <div class="day-info">
+        <div class="day-title">${WEEKDAYS[idx]} ${themeTag}</div>
+        <div class="day-line">${summaryLine}</div>
+      </div>
+      <div class="day-total">${fmt(t.kcal)} 千卡 · ${fmt(t.protein)}g 蛋白<b>${money(t.price)}</b></div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="day-body">
+      ${mealBlockHtml(day, idx, "breakfast")}
+      ${mealBlockHtml(day, idx, "lunch")}
+      ${mealBlockHtml(day, idx, "dinner")}
+      <div class="note"><b>今日搭配思路：</b>${day.note || "清淡低卡、均衡营养，控制全天热量在预算内"}。全天约 ${fmt(t.kcal)} 千卡 / ${fmt(t.protein)}g 蛋白 / ${money(t.price)}。</div>
+      ${currentPlan === "mcd" ? `<div style="margin-top:12px;">
+        <button class="btn gold sm" onclick="event.stopPropagation(); addDayToCart(${idx})">🛒 今天全部加入购物车</button>
+      </div>` : ""}
+    </div>
+  </div>`;
+}
+
+function mealBrief(m) {
+  if (currentPlan === "mcd") return m.items.map(i => i.name).join("+");
+  return m.recipe.name.split(" + ")[0];
+}
+
+function mealBlockHtml(day, idx, mealKey) {
+  const label = MEAL_LABEL[mealKey];
+  const m = day.meals[mealKey];
+  if (currentPlan === "mcd") {
+    const rows = m.items.map(i =>
+      `<div class="item"><span class="dot"></span><span class="n">${i.name}</span><span class="v">${i.calories} 千卡 · ${i.protein}g · ${money(i.price)}</span></div>`).join("");
+    const budget = mealSplit ? mealSplit[mealKey].kcal : m.kcal;
+    return `
+    <div class="meal-block">
+      <div class="meal-head"><span class="tag mcd">麦当劳</span><span class="meal-name">${label}</span>
+        <span class="meal-meta">热量 <b>${fmt(m.kcal)}</b> 千卡 · 蛋白 <b>${fmt(m.protein)}</b>g · <b>${money(m.price)}</b></span></div>
+      <div class="item-list">${rows}</div>
+      <div class="note"><b>搭配理由：</b>${mcdNote(mealKey, m, budget)}</div>
+      <div class="meal-foot">
+        <button class="btn red sm" onclick="addMealToCart(${idx}, '${mealKey}')">🛒 加入购物车</button>
+        <span class="meal-sub">真实下单由 WorkBuddy 调用 create-order；领券由 auto-bind-coupons 完成</span>
+      </div>
+    </div>`;
+  }
+  const r = m.recipe;
+  return `
+  <div class="meal-block">
+    <div class="meal-head"><span class="tag home">家常</span><span class="meal-name">${label} · ${r.name}</span>
+      <span class="meal-meta">热量 <b>${fmt(m.kcal)}</b> 千卡 · 蛋白 <b>${fmt(m.protein)}</b>g · 成本约 <b>${money(m.price)}</b></span></div>
+    <div class="item-list">
+      <div class="item"><span class="dot"></span><span class="n">食材</span><span class="v">${r.ingredients}</span></div>
+      <div class="item"><span class="dot"></span><span class="n">做法</span><span class="v">${r.method}</span></div>
+    </div>
+    <div class="note"><b>搭配理由：</b>${homeNote(mealKey, r)}</div>
+    <div class="meal-foot">
+      <span class="meal-sub">家常食谱为替代选项，可自行购买食材制作（此方案不提供在线下单）</span>
+    </div>
+  </div>`;
+}
+
+function toggleDay(idx) {
+  if (openDays.has(idx)) openDays.delete(idx); else openDays.add(idx);
+  renderWeek();
+}
+
+// ====================================================================
+// 购物车
+// ====================================================================
+function addMealToCart(dayIdx, mealKey) {
+  const plan = currentPlan === "mcd" ? weeklyMcd : weeklyHome;
+  const m = plan[dayIdx].meals[mealKey];
+  const dayName = WEEKDAYS[dayIdx], mealName = MEAL_LABEL[mealKey];
+  if (currentPlan === "mcd") {
+    m.items.forEach(i => cart.push({ label: `${dayName}·${mealName}`, name: i.name, kcal: i.calories, protein: i.protein, price: i.price }));
+  } else {
+    const r = m.recipe;
+    cart.push({ label: `${dayName}·${mealName}`, name: r.name, kcal: r.kcal, protein: r.protein, price: r.cost });
+  }
+  renderCart();
+  toast(`已将「${dayName}·${mealName}」加入购物车`);
+}
+
+function addDayToCart(dayIdx) {
+  ["breakfast", "lunch", "dinner"].forEach(k => addMealToCart(dayIdx, k));
+}
+
+function removeCartItem(i) { cart.splice(i, 1); renderCart(); }
+
+function renderCart() {
+  const cnt = cart.length;
+  const total = cart.reduce((s, it) => s + it.price, 0);
+  const fab = document.getElementById("cartFab");
+  fab.classList.toggle("hidden", cnt === 0);
+  document.getElementById("cartCnt").textContent = cnt;
+  document.getElementById("cartTotal").textContent = money(total);
+
+  const list = document.getElementById("cartList");
+  if (cnt === 0) { list.innerHTML = `<div class="cart-empty">购物车是空的，去上方套餐里加几样吧～</div>`; return; }
+  list.innerHTML = cart.map((it, i) =>
+    `<div class="cart-item">
+      <span class="n"><b>${it.name}</b><br><span style="color:#8A8577;font-size:12px">${it.label}</span></span>
+      <span class="v">${it.kcal}千卡 · ${it.protein}g</span>
+      <span class="v">${money(it.price)}</span>
+      <button class="rm" onclick="removeCartItem(${i})">×</button>
+    </div>`).join("");
+}
+
+// ====================================================================
+// 交互
+// ====================================================================
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("show"), 2400);
+}
+
+document.getElementById("generate").addEventListener("click", render);
+document.getElementById("seg").addEventListener("click", e => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  document.querySelectorAll("#seg button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  currentPlan = btn.dataset.plan;
+  renderWeek();
+});
+document.getElementById("addAll").addEventListener("click", () => {
+  for (let d = 0; d < 7; d++) addDayToCart(d);
+});
+
+const fab = document.getElementById("cartFab");
+const overlay = document.getElementById("cartOverlay");
+const panel = document.getElementById("cartPanel");
+fab.addEventListener("click", () => { overlay.classList.add("show"); panel.classList.add("show"); });
+overlay.addEventListener("click", () => { overlay.classList.remove("show"); panel.classList.remove("show"); });
+document.getElementById("cartClear").addEventListener("click", () => { cart = []; renderCart(); toast("已清空购物车"); });
+document.getElementById("cartCheckout").addEventListener("click", () => {
+  toast("演示版：真实下单由 WorkBuddy 调用 create-order 返回支付链接");
+});
+
+// 首次进入直接生成示例方案
+render();
+</script>
+</body>
+</html>
